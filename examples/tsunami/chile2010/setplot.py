@@ -35,6 +35,7 @@ def setplot(plotdata):
     from numpy import linspace
 
     plotdata.clearfigures()  # clear any old figures,axes,items data
+    plotdata.output_format = 'ascii'
 
 
     # To plot gauge locations on pcolor or contour plot, use this as
