@@ -67,13 +67,13 @@ c
                 mx = maxmx
                 maxmy = mjtot - 2*nghost
                 my = maxmy
+                time   = rnode(timemult, mptr)
                 call setaux(maxmx,maxmy,nghost,mx,my,corn1,corn2,hx,hy,
-     &                    naux,alloc(locaux))
+     &                    naux,alloc(locaux), time)
               else
                 locaux = 1
               endif
               node(storeaux, mptr)  = locaux
-              time   = rnode(timemult, mptr)
 c
 c      We now fill in the values for grid mptr using filval. It uses
 c      piecewise linear interpolation to obtain values from the

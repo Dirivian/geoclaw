@@ -43,7 +43,10 @@ subroutine b4step2(maxmx,maxmy,mbc,mx,my,meqn,q,xlower,ylower,dx,dy,t,dt,maux,au
     ! Move the topography if needed
     ! write(26,*) 'B4STEP2: t, num_dtopo: ', t,num_dtopo
 
+! ## change to call routine to adjust B by dB only if topo_altered is false
+
     do i=1,num_dtopo
+        write(6,*) '+++ call movetopo at t = ',t
         call movetopo(maxmx,maxmy,mbc,mx,my,                                  &
                       xlower,ylower,dx,dy,t,dt,maux,aux,                      &
                       dtopowork(i0dtopo(i):i0dtopo(i)+mdtopo(i)-1),           &

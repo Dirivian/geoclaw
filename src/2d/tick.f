@@ -304,6 +304,9 @@ c      time for output?  done with the whole thing?
 c
  110      continue
           time    = time   + possk(1)
+c          ### Modify topo arrays if past the final dtopo time and set flag
+c          ### and modify aux arrays of all existing grids to final topo (i.e. call setaux)
+c          ### see cleanup.f for template to loop over all levels, grids
           ncycle  = ncycle + 1
           call conck(1,nvar,naux,time,rest)
 

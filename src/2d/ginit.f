@@ -38,7 +38,7 @@ c :::::::::::::::::::::::::::::::::::::::;::::::::::::::::::::
                 maxmy = mjtot - 2*nghost
                 my = maxmy
                 call setaux(maxmx,maxmy,nghost,mx,my,corn1,corn2,hx,hy,
-     &                    naux,alloc(locaux))
+     &                    naux,alloc(locaux), start_time)
               else 
                 locaux = 1
               endif
@@ -66,13 +66,13 @@ c
 
 c         # reinitialize setaux in case moving dtopo changed aux
           if (naux .gt. 0) then
-                locaux              = igetsp(mitot*mjtot*naux)
+                locaux              = node(storeaux,mptr)
                 maxmx = mitot - 2*nghost
                 mx = maxmx
                 maxmy = mjtot - 2*nghost
                 my = maxmy
                 call setaux(maxmx,maxmy,nghost,mx,my,corn1,corn2,hx,hy,
-     &                    naux,alloc(locaux))
+     &                    naux,alloc(locaux), start_time)
                 write(6,*) maxmx,maxmy,nghost,mx,my,corn1,corn2,hx,hy,
      &                    naux,locaux
               else 
