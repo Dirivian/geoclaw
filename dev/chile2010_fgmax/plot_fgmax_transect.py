@@ -44,7 +44,7 @@ def make_plots():
         raise Exception("cannot open %s" % fgmax_input_file)
 
     # skip some lines:
-    for i in range(5):
+    for i in range(6):
         line = fid.readline()
 
     line = fid.readline().split()
