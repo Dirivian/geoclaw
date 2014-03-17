@@ -154,6 +154,7 @@ c        ## adjust time step  to hit chktime exactly, and do checkpointing
 c
       level        = 1
       ntogo(level) = 1
+      write(67,*) '+++0 level,ntogo: ',level,ntogo(level)
       do i = 1, maxlv
          dtnew(i)  = rinfinity
       enddo
@@ -254,7 +255,7 @@ c         # rjl & mjb changed to cfl_level, 3/17/10
               write(6,100)level,cfl_level,possk(level),timenew
               endif
 100       format(' AMRCLAW: level ',i2,'  CFL = ',e8.3,
-     &           '  dt = ',e10.4,  '  final t = ',e12.6)
+     &           '  dt = ',e10.4,  '  final t = ',e12.6) 
 
 
 c        # to debug individual grid updates...
@@ -263,6 +264,7 @@ c
 c done with a level of integration. update counts, decide who next.
 c
           ntogo(level)  = ntogo(level) - 1
+          write(67,*) '+++1 level,ntogo: ',level,ntogo(level)
           dtnew(level)  = dmin1(dtnew(level),dtlevnew)
           tlevel(level) = tlevel(level) + possk(level)
           icheck(level) = icheck(level) + 1
@@ -278,6 +280,7 @@ c            #  check if should adjust finer grid time step to start wtih
                 ntogo(level) = kratio(level-1)
               endif
              possk(level) = possk(level-1)/ntogo(level)
+             write(67,*) '+++2 level,ntogo: ',level,ntogo(level)
              go to 60
           endif
 c
@@ -302,14 +305,29 @@ c                   adjust time steps for this and finer levels
                     endif
                     print *,"    new ntogo dt ",ntogo(level),
      &                      possk(level)
+                   write(67,*) '+++3 level,ntogo: ',level,ntogo(level)
                     go to 106
                  endif
                  if (ntogo(level) .gt. 100) then
+                     write(67,*) '+++X level,ntogo: ',level,ntogo(level)
                      write(6,*) "**** Too many dt reductions ****"
                      write(6,*) "**** Stopping calculation   ****"
                      write(6,*) "**** ntogo = ",ntogo(level)
-                     write(6,1006) intratx(level-1),intraty(level-1),
-     &                             kratio(level-1),level
+                     write(6,1006) intratx(level-1),
+     &                    intraty(level-1),kratio(level-1),level
+                     write(6,*) "**** dttemp = ",dttemp
+                     write(6,*) "**** possk(level-1) = ",
+     &                          possk(level-1)
+                     write(6,*) "**** possk(level) = ",
+     &                          possk(level)
+                     write(6,*) "**** dtnew(level-1) = ",
+     &                          dtnew(level-1)
+                     write(6,*) "**** dtnew(level) = ",
+     &                          dtnew(level)
+                     write(6,*) "**** tlevel(level-1) = ",
+     &                          tlevel(level-1)
+                     write(6,*) "**** tlevel(level) = ",
+     &                          tlevel(level)
                      write(6,*) "Writing checkpoint file at t = ",time
                      call check(ncycle,time,nvar,naux)
                      stop
@@ -318,6 +336,7 @@ c                   adjust time steps for this and finer levels
                  go to 60
               else
                  level = level - 1
+                 write(67,*) '+++4 level,ntogo: ',level,ntogo(level)
                  call update(level,nvar,naux)
               endif
           go to 105
