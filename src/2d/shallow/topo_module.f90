@@ -781,6 +781,7 @@ contains
 
         ! Allocate and read dtopo files
         allocate(dtopowork(sum(mdtopo)))
+        write(6,*) '+++ mdtopo = ',mdtopo
 
         do i=1,num_dtopo
             call read_dtopo(mxdtopo(i),mydtopo(i),mtdtopo(i),dtopotype(i), &

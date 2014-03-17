@@ -84,6 +84,12 @@ subroutine topo_update(t)
          cycle
       endif
 
+       write(6,*) '+++ mt = ',mt
+       write(6,*) '+++ ijll,ijlr,ijul,ijur: ',ijll,ijlr,ijul,ijur
+       write(6,*) '    index0_dtopowork1: ',index0_dtopowork1
+       write(6,*) '    mxdtopo: ',mxdtopo
+       write(6,*) '    mydtopo: ',mydtopo
+
       do j=1,mytopo(mt)
          y = yhitopo(mt) - real(j-1,kind=8)*dytopo(mt)
          do i=1,mxtopo(mt)
@@ -113,6 +119,12 @@ subroutine topo_update(t)
                idtopo2 = int(ceiling((x-xlowdtopo(m))/dxdtopo(m)))+1
                jdtopo1 = int(floor((yhidtopo(m)-y)/dydtopo(m))) + 1
                jdtopo2 = int(ceiling((yhidtopo(m)-y)/dydtopo(m))) + 1
+               ! check for rounding errors:
+               idtopo1 = max(idtopo1,1)
+               idtopo2 = min(idtopo2,mxdtopo(m))
+               jdtopo1 = max(jdtopo1,1)
+               jdtopo2 = min(jdtopo2,mydtopo(m))
+
                !indices for dtopo work array
                ijll = index0_dtopowork1(m) + (jdtopo2-1)*mxdtopo(m) + idtopo1 -1
                ijlr = index0_dtopowork1(m) + (jdtopo2-1)*mxdtopo(m) + idtopo2 -1
