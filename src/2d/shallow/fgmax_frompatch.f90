@@ -19,8 +19,21 @@ subroutine fgmax_frompatch(mx,my,meqn,mbc,maux,q,aux,dx,dy, &
     logical, allocatable, dimension(:) :: mask_fgrid
     type(fgrid), pointer :: fg
     integer :: ifg,k,mv
+    integer :: i,j
+
+    write(26,*) '+++ fgmax_frompatch: max aux = ',maxval(aux(1,:,:))
+    write(26,*) '+++ fgmax_frompatch: max   h = ',maxval(q(1,:,:))
 
     !print *, '+++ FG_DEBUG = ', FG_DEBUG
+       do i=1-mbc,mx+mbc
+           do j=1-mbc,my+mbc
+               if (aux(1,i,j) .gt. 1.e10) then
+                    write(6,*) '+++ fg: i,j,aux(1,i,j) = ',i,j,aux(1,i,j)
+                    write(6,*) '    mx,my: ',mx,my
+                    endif
+                enddo
+            enddo
+      
 
     if (FG_num_fgrids == 0) then
         return

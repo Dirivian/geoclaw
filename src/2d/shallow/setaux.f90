@@ -147,6 +147,7 @@ subroutine setaux(mbc,mx,my,xlow,ylow,dx,dy,maux,aux)
         endif
     enddo
 
+    write(26,*) '+++ setaux: max(aux(1,:,:)) = ',maxval(aux(1,:,:)),mx,my
 
 
     ! Output for debugging to fort.23

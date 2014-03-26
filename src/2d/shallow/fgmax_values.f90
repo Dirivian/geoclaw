@@ -33,6 +33,7 @@ subroutine fgmax_values(mx,my,meqn,mbc,maux,q,aux,dx,dy, &
 
     real(kind=8) :: s,hs,hss,s_dry_tol
     real(kind=8), dimension(:,:), allocatable :: u,v,h
+    integer :: i,j
 
     allocate(h(1-mbc:mx+mbc, 1-mbc:my+mbc))
     if (FG_NUM_VAL > 1) then
@@ -50,9 +51,24 @@ subroutine fgmax_values(mx,my,meqn,mbc,maux,q,aux,dx,dy, &
 
     h = q(1,:,:)
 
+
     where (mask_patch .and. (h >= dry_tolerance))
         values(1,:,:) = h + aux(1,:,:)
     endwhere
+
+    if (maxval(values(1,:,:)) > 1e10) then
+        write(26,*) '+++ mx,my: ',mx,my
+        do i=1-mbc,mx+mbc
+            do j=1-mbc,my+mbc
+                if (values(1,i,j) > 1e10) then
+                    write(26,*) 'i,j,values,h,aux: ',i,j, &
+                            values(1,i,j),q(1,i,j),aux(1,i,j)
+                    endif
+                enddo
+            enddo
+        write(6,*) '+++ aborting, see fort.26'
+        stop
+        endif
 
     where (mask_patch .and. (h < dry_tolerance))
         values(1,:,:) = -1.d90   !# to indicate dry region

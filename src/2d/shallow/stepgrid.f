@@ -154,6 +154,16 @@ c::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
        call b4step2(mbc,mx,my,nvar,q,
      &             xlowmbc,ylowmbc,dx,dy,time,dt,maux,aux)
+
+       do i=1,mitot
+           do j=1,mjtot
+               if (aux(1,i,j) .gt. 1.e10) then
+                    write(6,*) '+++ 1: i,j,aux(1,i,j) = ',i,j,aux(1,i,j)
+                    write(6,*) '    mitot,mjtot: ',mitot,mjtot
+                    stop
+                    endif
+                enddo
+            enddo
       
 c::::::::::::::::::::::::FIXED GRID DATA before step:::::::::::::::::::::::
 c     # fill in values at fixed grid points effected at time tc0
@@ -207,6 +217,16 @@ c        # levelcheck > 0.
 c:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 
 c     New fixed grid stuff: Update fixed grid info from this patch...
+
+       do i=1,mitot
+           do j=1,mjtot
+               if (aux(1,i,j) .gt. 1.e10) then
+                    write(6,*) '+++ 2: i,j,aux(1,i,j) = ',i,j,aux(1,i,j)
+                    write(6,*) '    mitot,mjtot: ',mitot,mjtot
+                    endif
+                enddo
+            enddo
+      
 
       call fgmax_frompatch(mx,my,nvar,mbc,maux,q,aux,
      &     dx,dy,xlowmbc,ylowmbc,level,time,time+dt)

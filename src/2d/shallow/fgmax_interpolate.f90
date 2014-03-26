@@ -30,6 +30,9 @@ subroutine fgmax_interpolate(mx,my,meqn,mbc,maux,q,aux,dx,dy, &
     real(kind=8) :: x1,x2,y1,y2,x,y,xupper,yupper
     logical :: debug
 
+    write(26,*) '+++ fgmax_interp: max aux = ',maxval(aux(1,:,:))
+    write(26,*) '+++ fgmax_interp: max   h = ',maxval(q(1,:,:))
+
     debug = FG_DEBUG
     if (debug) then
         write(61,*) '========================================'
@@ -81,10 +84,10 @@ subroutine fgmax_interpolate(mx,my,meqn,mbc,maux,q,aux,dx,dy, &
     allocate(jk(1:fg%npts))
 
     ! Create a mask that is .true. only in part of patch intersecting fgrid:
-    i1 = int((x1 - xlower + 0.5d0*dx) / dx)
-    i2 = int((x2 - xlower + 0.5d0*dx) / dx) + 1
-    j1 = int((y1 - ylower + 0.5d0*dy) / dy)
-    j2 = int((y2 - ylower + 0.5d0*dy) / dy) + 1
+    i1 = int((x1 - xlower + 0.49d0*dx) / dx)
+    i2 = int((x2 - xlower + 0.51d0*dx) / dx) + 1
+    j1 = int((y1 - ylower + 0.49d0*dy) / dy)
+    j2 = int((y2 - ylower + 0.51d0*dy) / dy) + 1
     if (debug) then
         write(61,*) 'patch intersecting fgrid: i1,i2: ',i1,i2
         write(61,*) 'patch intersecting fgrid: j1,j2: ',j1,j2
@@ -189,6 +192,13 @@ subroutine fgmax_interpolate(mx,my,meqn,mbc,maux,q,aux,dx,dy, &
 !64             format('mv,v,a,b,c: ',i2,4d16.6)
                 endif
             enddo
+
+        if (maxval(fg_values) .gt. 1e10) then
+            write(26,*) '+++ interp: maxval(fg_values) = ',maxval(fg_values)
+            write(6,*) '+++ aborting in fgmax_interpolate'
+            stop
+            endif
+            
 
         enddo
 

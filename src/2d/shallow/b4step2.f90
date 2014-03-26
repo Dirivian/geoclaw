@@ -56,5 +56,16 @@ subroutine b4step2(mbc,mx,my,meqn,q,xlower,ylower,dx,dy,t,dt,maux,aux)
         call setaux(mbc,mx,my,xlower,ylower,dx,dy,maux,aux)
         endif
 
+   do i=1-mbc,mx+mbc
+       do j=1-mbc,my+mbc
+           if (aux(1,i,j) .gt. 1.e10) then
+                write(6,*) '+++ b4: i,j,aux(1,i,j) = ',i,j,aux(1,i,j)
+                write(6,*) '    mx,my: ',mx,my
+                write(6,*) '    aux_finalized = ',aux_finalized
+                stop
+                endif
+            enddo
+        enddo
+
 
 end subroutine b4step2
