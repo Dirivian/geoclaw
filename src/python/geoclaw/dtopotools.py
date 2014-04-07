@@ -26,6 +26,7 @@ import copy
 import numpy
 import numpy as np   # Need to unify: numpy and np both used below
 from numpy import sin,cos,sqrt
+from pylab import *
 
 # Constants
 from data import Rearth
@@ -79,6 +80,7 @@ def read_subfault_model(fname, columns, units=None, \
     whitespace but it could be ',' for a csv file, for example.
 
     """
+    import copy
 
     valid_labels = """latitude longitude strike dip rake slip length width
                       depth rupture_time rise_time rise_time_ending ignore""".split()
@@ -183,6 +185,7 @@ def read_subfault_model_ucsb(fname):
     downloadable from:
      http://www.geol.ucsb.edu/faculty/ji/big_earthquakes/home.html
     """
+    import re
     lines = open(fname,'r').readlines()
     regexp_dx = re.compile(r"Dx=[ ]*(?P<dx>[^k]*)")
     regexp_dy = re.compile(r"Dy=[ ]*(?P<dy>[^k]*)")
@@ -667,7 +670,8 @@ def plot_subfaults(subfaults, plot_centerline=False, slip_color=False, \
     Plot each subfault projected onto the surface.
     Describe parameters...
     """
-
+    import matplotlib
+    
     #figure(44,(6,12)) # For CSZe01
     #clf()
 
