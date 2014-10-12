@@ -58,6 +58,9 @@ class ClawPlotFGData(ClawData):
         self.add_attribute('grids',{})
         self.add_attribute('combined_figure',True)
 
+        self.add_attribute('grid',None)
+        self.add_attribute('solution',None)
+
     def list_frames(self):
 
         import glob
@@ -88,8 +91,10 @@ class ClawPlotFGData(ClawData):
             raise IOError("Missing fixed grid output file")
         
 
-        self.grid = ClawData()
-        grid = self.grid
+        attributes = """mx my xlow ylow xhi yhi x y dx dy 
+                        xcenter ycenter""".split()
+
+        grid = self.grid = ClawData(attributes)
 
         # Read parameters from header:
 
@@ -129,7 +134,8 @@ class ClawPlotFGData(ClawData):
 
         d = loadtxt(fname, skiprows=8)
 
-        solution = ClawData()
+        attributes = """t ncols h B eta surface land fg""".split()
+        solution = ClawData(attributes)
         solution.t = t
         solution.ncols = d.shape[1]
         solution.h = reshape(d[:,0], (grid.my,grid.mx))
@@ -142,6 +148,7 @@ class ClawPlotFGData(ClawData):
             solution.fg[col,:,:] = reshape(d[:,col],(grid.my,grid.mx))
         
         self.solutions[frameno] = solution
+
         return grid, solution
 
 
