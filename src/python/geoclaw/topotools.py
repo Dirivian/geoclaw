@@ -615,9 +615,11 @@ class Topography(object):
                 N[0] = data.shape[0] / N[1]
 
                 self._x = data[:N[1],0]
-                self._y = data[::N[1],1]
+                self._y = numpy.flipud(data[::N[1],1])
                 self._Z = numpy.flipud(data[:,2].reshape(N))
                 self._delta = self.X[0,1] - self.X[0,0]
+                if self._y[-1] < self._y[0]:
+                    print "Warning: data points not in expected order"
 
             elif abs(self.topo_type) in [2,3]:
                 # Get header information
