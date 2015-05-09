@@ -19,6 +19,7 @@ def etopo1_download(xlimits, ylimits, dx=0.0166666666667, dy=None, \
     - *xlimits*: tuple (x1, x2) limits in longitude
       Must either have -180 <= x1 < x2 <= 180
            or 180 <= x1 < x2 <= 360
+           or -360 <= x1 < x2 <= -180
       To download topo for a region spanning longitude 180, you must
       download two separate files, one on each side.
 
@@ -54,11 +55,13 @@ def etopo1_download(xlimits, ylimits, dx=0.0166666666667, dy=None, \
     y1,y2 = ylimits
 
     if (x1>=180) and (x1<x2) and (x2<=360):
-        shift_by_360 = True
-        x1 = x1 - 360.
-        x2 = x2 - 360.
+        longitude_shift = -360.
+    if (x1>=-360) and (x1<x2) and (x2<=-180):
+        longitude_shift = 360.
     else:
-        shift_by_360 = False
+        longitude_shift = 0.
+    x1 = x1 + longitude_shift
+    x2 = x2 + longitude_shift
 
     if (x1<-180) or (x1>=x2) or (x2>180):
         raise ValueError("Require -180 <= x1 < x2 <= 180 or 180 <= x1 < x2 <=360")
@@ -72,24 +75,28 @@ def etopo1_download(xlimits, ylimits, dx=0.0166666666667, dy=None, \
             + '&coverage=etopo1&CRS=EPSG:4326' \
             + format + bbox + res
 
-    util.get_remote_file(url, output_dir=output_dir, file_name=file_name, \
-                    verbose=verbose,force=force)
+    file_path = os.path.join(output_dir,file_name)
+    if os.path.exists(file_path) and (not force):
+        print "Skipping download... file already exists: ",file_path
 
-    if shift_by_360:
-        x1 = x1 + 360.
-
-    path = os.path.join(output_dir,file_name)
-    lines = open(path).readlines()
-    if lines[2].split()[0] != 'xllcorner':
-        print "*** Error downloading, check the file!"
     else:
-        lines[2] = 'xllcorner    %1.12f\n' % x1
-        lines[3] = 'yllcorner    %1.12f\n' % y1
-        lines = lines[:5] + ['nodata_value    -99999\n'] + lines[5:]
-        f = open(path,'w')
-        f.writelines(lines)
-        f.close()
-        print "Shifted xllcorner and yllcorner to cell centers"
-        print "   and added nodata_value line"
-    print "File: ",path
+    
+        util.get_remote_file(url, output_dir=output_dir, file_name=file_name, \
+                        verbose=verbose,force=force)
+
+        x1 = x1 - longitude_shift   # shift back before writing header
+
+        lines = open(file_path).readlines()
+        if lines[2].split()[0] != 'xllcorner':
+            print "*** Error downloading, check the file!"
+        else:
+            lines[2] = 'xllcorner    %1.12f\n' % x1
+            lines[3] = 'yllcorner    %1.12f\n' % y1
+            lines = lines[:5] + ['nodata_value    -99999\n'] + lines[5:]
+            f = open(file_path,'w')
+            f.writelines(lines)
+            f.close()
+            print "Shifted xllcorner and yllcorner to cell centers"
+            print "   and added nodata_value line"
+        print "Created file: ",file_path
 
