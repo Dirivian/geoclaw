@@ -56,7 +56,7 @@ def etopo1_download(xlimits, ylimits, dx=0.0166666666667, dy=None, \
 
     if (x1>=180) and (x1<x2) and (x2<=360):
         longitude_shift = -360.
-    if (x1>=-360) and (x1<x2) and (x2<=-180):
+    elif (x1>=-360) and (x1<x2) and (x2<=-180):
         longitude_shift = 360.
     else:
         longitude_shift = 0.
